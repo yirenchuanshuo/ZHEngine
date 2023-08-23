@@ -13,18 +13,7 @@ using namespace std;
 
 
 
-static void render(OBJ Model) {
-	CHECK_GL(glPointSize(32.0f));
-	CHECK_GL(glEnable(GL_BLEND));
-	CHECK_GL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-	glBegin(GL_POINTS);
-	for (auto const& vertices : Model.vertices)
-	{
-		glVertex3f(vertices.x, vertices.y, vertices.z);
-	}
-	CHECK_GL(glEnd());
-}
 
 static void mouse_button_callback
 (GLFWwindow* window
@@ -85,15 +74,14 @@ int main()
 	cout << "OpenGL version: " << glGetString(GL_VERSION) << '\n';
 
 	OBJ Model;
-	Model.load_obj("C:/Users/Administrator/Desktop/Box.obj");
+	Model.load_obj("C:/Users/Administrator/Desktop/Monkey.obj");
 	
-	glEnable(GL_POINT_SMOOTH);
 	
 	//glfwSetMouseButtonCallback(window, mouse_button_callback);
 	while (!glfwWindowShouldClose(window)) {
 		// render graphics
 		glClear(GL_COLOR_BUFFER_BIT);
-		render(Model);
+		Model.draw_obj();
 		// refresh screen
 		//提交画图Buffer
 		glfwSwapBuffers(window);

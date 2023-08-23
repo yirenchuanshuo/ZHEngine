@@ -20,29 +20,47 @@ void OBJ::load_obj(std::string path)
 		if (line.substr(0, 2) == "v ")
 		{
 			std::istringstream s(line.substr(2));
-			Vertex vertex;
+			glm::vec3 vertex;
 			s >> vertex.x >> vertex.y >> vertex.z;
 			vertices.push_back(vertex);
 		}
-		else if (line.substr(0, 2) == "f")
+		else if (line.substr(0, 2) == "f ")
 		{
 			std::istringstream s(line.substr(2));
-			std::string sa, sb, sc;
-			Face face;
-			s >> sa >> sb >> sc;
-			std::istringstream(sa) >> face.a;
-			std::istringstream(sb) >> face.b;
-			std::istringstream(sc) >> face.c;
-			face.a--;
-			face.b--;
-			face.c--;
-			faces.push_back(face);
+			std::string splitted;
+			std::vector<unsigned int>indices;
+			while (std::getline(s, splitted, ' '))
+			{
+				unsigned int index;
+				std::istringstream(splitted) >> index;
+				indices.push_back(index - 1);
+			}
+			for (size_t i = 2; i < indices.size(); i++)
+			{
+				glm::uvec3 face = { indices[0],indices[i - 1],indices[i] };
+				faces.push_back(face);
+			}
+			
 		}
 	}
 	file.close();
-	std::cout << "Loaded" << vertices.size() << "vertices.\n";
+	std::cout << "Loaded " << vertices.size() << " vertices, " << faces.size() << " faces.\n";
 }
 
-void OBJ::draw_obj(bool isFlat)
+void OBJ::draw_obj()
 {
+	glBegin(GL_TRIANGLES);
+
+	for (auto const& face : faces)
+	{
+		auto const& a = vertices.at(face.x);
+		auto const& b = vertices.at(face.y);
+		auto const& c = vertices.at(face.z);
+
+		glVertex3fv(glm::value_ptr(a));
+		glVertex3fv(glm::value_ptr(b));
+		glVertex3fv(glm::value_ptr(c));
+	}
+
+	CHECK_GL(glEnd());
 }

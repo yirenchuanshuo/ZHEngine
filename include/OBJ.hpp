@@ -4,23 +4,15 @@
 #include <vector>
 #include <string>
 
-struct Vertex
-{
-    float x, y, z;
-};
 
-struct Face
-{
-    unsigned int a, b, c;
-};
 
 
 struct OBJ {
-    std::vector<Vertex> vertices;
-    std::vector<Face> faces;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::uvec3> faces;
 
     void load_obj(std::string path);
-    void draw_obj(bool isFlat);
+    void draw_obj();
 }; 
 
 
