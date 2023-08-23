@@ -7,7 +7,8 @@
 
 
 
-struct OBJ {
+class OBJ {
+public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::uvec3> faces;
 

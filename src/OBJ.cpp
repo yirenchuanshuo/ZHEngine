@@ -6,6 +6,11 @@
 #include "OBJ.hpp"
 
 
+static glm::vec3 perspective_divide(glm::vec4 pos)
+{
+	return glm::vec3(pos.x / pos.w, pos.y / pos.w, pos.z / pos.w);
+}
+
 void OBJ::load_obj(std::string path)
 {
 	std::ifstream file(path);
