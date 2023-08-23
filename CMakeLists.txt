@@ -13,7 +13,7 @@ project (MyEngine LANGUAGES CXX C)
 
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp)
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS include/*.h include/*.hpp)
-add_executable(MyEngine ${sources} ${headers} "src/OBJ.cpp")
+add_executable(MyEngine ${sources} ${headers} "src/OBJ.cpp" "src/Game.cpp")
 target_include_directories(MyEngine PUBLIC include)
 
 
