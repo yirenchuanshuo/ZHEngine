@@ -13,7 +13,7 @@ project (MyEngine LANGUAGES CXX C)
 
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS src/*.cpp)
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS include/*.h include/*.hpp)
-add_executable(MyEngine ${sources} ${headers} "src/OBJ.cpp" "src/Game.cpp")
+add_executable(MyEngine ${sources} ${headers} "src/OBJ.cpp" "src/Game.cpp" "src/InputCtl.cpp" "include/stb_truetype.h")
 target_include_directories(MyEngine PUBLIC include)
 
 
@@ -24,3 +24,5 @@ add_subdirectory(glfw)
 target_link_libraries(MyEngine PUBLIC glfw)
 add_subdirectory(glad)
 target_link_libraries(MyEngine PUBLIC glad)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DOPENGLTUTOR_HOME=\"${CMAKE_CURRENT_SOURCE_DIR}/\")

@@ -7,34 +7,11 @@
 #include <iostream>
 #include <cstdlib>
 #include "OBJ.hpp"
+#include "Game.hpp"
 using namespace std;
 
 
 
-
-
-
-
-static void mouse_button_callback
-(GLFWwindow* window
-	, int button
-	, int action
-	, int mods
-)
-{
-	if (button == GLFW_MOUSE_BUTTON_LEFT
-		&& action == GLFW_PRESS)
-	{
-		double xpos, ypos;
-		int width, height;
-		glfwGetCursorPos(window, &xpos, &ypos);
-		glfwGetWindowSize(window, &width, &height);
-
-		float x = (float)(2 * xpos / width - 1);
-		float y = (float)(2 * (height - ypos) / height - 1);
-		
-	}
-}
 
 int main()
 {
@@ -47,16 +24,24 @@ int main()
 		if (!errmsg) errmsg = "(no error)";
 		return -1;
 	}
-	
-
+	constexpr int version = 20;
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+	glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version / 10);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, version % 10);
+	if (version >= 33) {
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	}
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	
 	//画一个窗口
-	GLFWwindow* window = glfwCreateWindow(640, 640, "Triangles", NULL, NULL);\
+	GLFWwindow* window = glfwCreateWindow(1024, 768, "Triangles", NULL, NULL);
 	//异常处理
 	if (!window)
 	{
+		check_gl::opengl_show_glfw_error_diagnose();
 		glfwTerminate();
-		throw std::runtime_error("Failed To Create Window");
+		return -1;
 	}
 	//把当前窗口设为上下文
 	glfwMakeContextCurrent(window);
@@ -65,23 +50,22 @@ int main()
 	{
 		glfwTerminate();
 		cout << "GLAD failed to load GL functions\n";
-	}
-	/*if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		glfwTerminate();
-		std::cerr << "GLAD failed to load GL functions\n";
 		return -1;
-	}*/
-	cout << "OpenGL version: " << glGetString(GL_VERSION) << '\n';
+	}
+	check_gl::opengl_try_enable_debug_message();
+	std::cerr << "OpenGL version: " << (const char*)glGetString(GL_VERSION) << '\n';
 
-	OBJ Model;
-	Model.load_obj("C:/Users/Administrator/Desktop/Monkey.obj");
+	glfwSwapInterval(1);
+
+	Game& game = Game::get();
+	game.set_window(window);
+
+	game.Initialize();
 	
 	
-	//glfwSetMouseButtonCallback(window, mouse_button_callback);
 	while (!glfwWindowShouldClose(window)) {
 		// render graphics
-		glClear(GL_COLOR_BUFFER_BIT);
-		Model.draw_obj();
+		game.render();
 		// refresh screen
 		//提交画图Buffer
 		glfwSwapBuffers(window);
@@ -89,7 +73,6 @@ int main()
 		glfwPollEvents();
 	}
 	glfwTerminate();
-	
 	
 	return 0;
 }
